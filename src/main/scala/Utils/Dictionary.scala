@@ -1,9 +1,8 @@
 package Utils
 
-/**
-* Contains the dictionary of the application, which is used to validate, correct and normalize words entered by the
-* user.
-*/
+/** Contains the dictionary of the application, which is used to validate,
+  * correct and normalize words entered by the user.
+  */
 object Dictionary:
   // This dictionary is a Map object that contains valid words as keys and their normalized equivalents as values (e.g.
   // we want to normalize the words "veux" and "aimerais" in one unique term: "vouloir").
@@ -27,6 +26,6 @@ object Dictionary:
     "et" -> "et",
     "ou" -> "ou",
     "svp" -> "svp",
-    "stp" -> "svp",
+    "stp" -> "svp"
   )
 end Dictionary

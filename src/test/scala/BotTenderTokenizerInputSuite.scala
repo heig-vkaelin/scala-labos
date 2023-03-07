@@ -7,27 +7,32 @@ import java.io.ByteArrayOutputStream
 import Utils.{Dictionary, SpellCheckerService, SpellCheckerImpl}
 import Chat.TokenizerService
 
-class BotTenderTokenizerInputSuite extends AnyPropSpec with TableDrivenPropertyChecks with should.Matchers {
-    val spellCheckerSvc: SpellCheckerService = new SpellCheckerImpl(Dictionary.dictionary)
-    val tokenizerSvc: TokenizerService = new TokenizerService(spellCheckerSvc)
-    
-    val evaluateInput = MainTokenizer.evaluateInput(tokenizerSvc)
+class BotTenderTokenizerInputSuite
+    extends AnyPropSpec
+    with TableDrivenPropertyChecks
+    with should.Matchers {
+  val spellCheckerSvc: SpellCheckerService = new SpellCheckerImpl(
+    Dictionary.dictionary
+  )
+  val tokenizerSvc: TokenizerService = new TokenizerService(spellCheckerSvc)
 
-    // You can use this test to debug any input
-    property("inputting") {
-        evaluateInput("quitter")
-    }
+  val evaluateInput = MainTokenizer.evaluateInput(tokenizerSvc)
 
-    property("inputting 'quitter'") {
-        // capture output for testing therefore it is not shown in the terminal
-        val outCapture = new ByteArrayOutputStream
-        Console.withOut(outCapture) {
-            evaluateInput("quitter") should equal(false)
-        }
-        outCapture.toString() should include ("Adieu.")
-    }
+  // You can use this test to debug any input
+  property("inputting") {
+    evaluateInput("quitter")
+  }
 
-    property("inputting 'santé !'") {
-        evaluateInput("santé !") should equal(true)
+  property("inputting 'quitter'") {
+    // capture output for testing therefore it is not shown in the terminal
+    val outCapture = new ByteArrayOutputStream
+    Console.withOut(outCapture) {
+      evaluateInput("quitter") should equal(false)
     }
+    outCapture.toString() should include("Adieu.")
+  }
+
+  property("inputting 'santé !'") {
+    evaluateInput("santé !") should equal(true)
+  }
 }
