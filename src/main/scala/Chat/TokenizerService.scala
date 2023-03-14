@@ -29,18 +29,20 @@ class TokenizerService(spellCheckerSvc: SpellCheckerService):
      take a string and return the corresponding token
      */
   def getToken(word: String): Token =
-    if word == "bonjour" then BONJOUR
-    else if word == "je" then JE
-    else if word == "etre" then ETRE
-    else if word == "vouloir" then VOULOIR
-    else if word == "assoiffe" then ASSOIFFE
-    else if word == "affame" then AFFAME
-    else if word == "biere" then PRODUIT
-    else if word == "croissant" then PRODUIT
-    else if word == "et" then ET
-    else if word == "ou" then OU
-    else if word == "svp" then SVP
-    else if word.startsWith("_") then PSEUDO
-    else if word.matches("[0-9]+") then NUM
-    else UNKNOWN
+    word match {
+      case "bonjour"                   => BONJOUR
+      case "je"                        => JE
+      case "etre"                      => ETRE
+      case "vouloir"                   => VOULOIR
+      case "assoiffe"                  => ASSOIFFE
+      case "affame"                    => AFFAME
+      case "biere"                     => PRODUIT
+      case "croissant"                 => PRODUIT
+      case "et"                        => ET
+      case "ou"                        => OU
+      case "svp"                       => SVP
+      case _ if word.startsWith("_")   => PSEUDO
+      case _ if word.matches("[0-9]+") => NUM
+      case _                           => UNKNOWN
+    }
 end TokenizerService
