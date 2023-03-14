@@ -16,14 +16,12 @@ class TokenizerService(spellCheckerSvc: SpellCheckerService):
     val inputWithoutPunctuation =
       input.replaceAll("[.,;:!?]", "").replaceAll("['\\s\\s+/g]", " ")
     val words = inputWithoutPunctuation.split(" ")
+
     val tokens = words.map { word =>
-      (
-        word,
-        getToken(dictionary.get(word) match
-          case Some(value) => value
-          case None        => spellCheckerSvc.getClosestWordInDictionary(word)
-        )
-      )
+      dictionary.get(word) match
+        case Some(value) => (value, getToken(value))
+        case None =>
+          (spellCheckerSvc.getClosestWordInDictionary(word), getToken(word))
     }
     TokenizedImpl(tokens)
 
