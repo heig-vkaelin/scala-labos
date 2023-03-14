@@ -12,10 +12,14 @@ class TokenizerService(spellCheckerSvc: SpellCheckerService):
     *   A Tokenizer which allows iteration over the tokens of the input
     */
   def tokenize(input: String): Tokenized =
-    // remove all the punctuation marks, single quote and multiple spaces
-    val inputWithoutPunctuation =
-      input.replaceAll("[.,;:!?]", "").replaceAll("['\\s\\s+/g]", " ")
-    val words = inputWithoutPunctuation.split(" ")
+    val words =
+      input
+        .replaceAll("[.,!?*]", "") // enlever les ponctuations
+        .replaceAll("[']", " ") // remplacer les apostrophes par des espaces
+        .replaceAll("\\s{2,}", " ") // remplacer les espaces multiples
+        .trim()
+        .split(" ")
+        .filter(_.nonEmpty)
 
     val tokens = words.map { word =>
       dictionary.get(word) match
