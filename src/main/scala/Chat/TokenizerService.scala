@@ -21,7 +21,8 @@ class TokenizerService(spellCheckerSvc: SpellCheckerService):
       dictionary.get(word) match
         case Some(value) => (value, getToken(value))
         case None =>
-          (spellCheckerSvc.getClosestWordInDictionary(word), getToken(word))
+          val closestWord = spellCheckerSvc.getClosestWordInDictionary(word)
+          (closestWord, getToken(closestWord))
     }
     TokenizedImpl(tokens)
 
