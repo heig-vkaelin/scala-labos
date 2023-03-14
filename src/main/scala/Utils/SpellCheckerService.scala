@@ -34,16 +34,12 @@ class SpellCheckerImpl(val dictionary: Map[String, String])
   // TODO - Part 1 Step 2
   def stringDistance(s1: String, s2: String): Int = ???
 
-  // TODO - Part 1 Step 2
   def getClosestWordInDictionary(misspelledWord: String): String =
     misspelledWord match {
       case word if word.forall(_.isDigit) => word
       case word if word.startsWith("_")   => word
       case _                              =>
         // get the closest word in the dictionary
-        // TODO: comprendre cte merde
-        dictionary.minBy { case (key, _) =>
-          stringDistance(key, misspelledWord)
-        }._2
+        dictionary.minBy((key, _) => stringDistance(key, misspelledWord))._2
     }
 end SpellCheckerImpl
