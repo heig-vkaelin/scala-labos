@@ -42,7 +42,7 @@ class TokenizerService(spellCheckerSvc: SpellCheckerService):
       case "ou"                        => OU
       case "svp"                       => SVP
       case _ if word.startsWith("_")   => PSEUDO
-      case _ if word.matches("[0-9]+") => NUM
+      case _ if word.forall(_.isDigit) => NUM
       case _                           => UNKNOWN
     }
 end TokenizerService
