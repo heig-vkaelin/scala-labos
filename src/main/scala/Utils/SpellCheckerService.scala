@@ -34,7 +34,7 @@ end SpellCheckerService
 class SpellCheckerImpl(val dictionary: Map[String, String])
     extends SpellCheckerService:
 
-// TODO: trouver une version entre les 2 ? + opti que la 2e mais pas trop illisible comme la 1ere
+  // TODO: ça dégage ?
   def stringDistance_INCOMPREHENSIBLE(s1: String, s2: String): Int =
     ((0 to s2.length).toList /: s1)((prev, x) =>
       (prev zip prev.tail zip s2).scanLeft(prev.head + 1) {
@@ -43,17 +43,23 @@ class SpellCheckerImpl(val dictionary: Map[String, String])
       }
     ).last
 
+  // TODO: on garde ça ?
   def stringDistance(s1: String, s2: String): Int = {
+    val memo = scala.collection.mutable.Map[(String, String), Int]()
+
     def levensthein(s1: String, s2: String): Int = {
-      if (s1.isEmpty) s2.length
-      else if (s2.isEmpty) s1.length
-      else {
-        val cost = if (s1.head == s2.head) 0 else 1
-        val deletion = levensthein(s1.tail, s2) + 1
-        val insertion = levensthein(s1, s2.tail) + 1
-        val substitution = levensthein(s1.tail, s2.tail) + cost
-        List(deletion, insertion, substitution).min
-      }
+      if (memo.contains((s1, s2)) == false)
+        memo((s1, s2)) =
+          if (s1.isEmpty) s2.length
+          else if (s2.isEmpty) s1.length
+          else {
+            val cost = if (s1.head == s2.head) 0 else 1
+            val deletion = levensthein(s1.tail, s2) + 1
+            val insertion = levensthein(s1, s2.tail) + 1
+            val substitution = levensthein(s1.tail, s2.tail) + cost
+            List(deletion, insertion, substitution).min
+          }
+      memo((s1, s2))
     }
     levensthein(s1, s2)
   }
