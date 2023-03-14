@@ -1,5 +1,7 @@
 package Utils
 
+import scala.math.min
+
 trait SpellCheckerService:
   /** This dictionary is a Map object that contains valid words as keys and
     * their normalized equivalents as values (e.g. we want to normalize the
@@ -31,8 +33,30 @@ end SpellCheckerService
 
 class SpellCheckerImpl(val dictionary: Map[String, String])
     extends SpellCheckerService:
-  // TODO - Part 1 Step 2
-  def stringDistance(s1: String, s2: String): Int = ???
+
+// TODO: trouver une version entre les 2 ? + opti que la 2e mais pas trop illisible comme la 1ere
+  def stringDistance_INCOMPREHENSIBLE(s1: String, s2: String): Int =
+    ((0 to s2.length).toList /: s1)((prev, x) =>
+      (prev zip prev.tail zip s2).scanLeft(prev.head + 1) {
+        case (h, ((d, v), y)) =>
+          min(min(h + 1, v + 1), d + (if (x == y) 0 else 1))
+      }
+    ).last
+
+  def stringDistance(s1: String, s2: String): Int = {
+    def levensthein(s1: String, s2: String): Int = {
+      if (s1.isEmpty) s2.length
+      else if (s2.isEmpty) s1.length
+      else {
+        val cost = if (s1.head == s2.head) 0 else 1
+        val deletion = levensthein(s1.tail, s2) + 1
+        val insertion = levensthein(s1, s2.tail) + 1
+        val substitution = levensthein(s1.tail, s2.tail) + cost
+        List(deletion, insertion, substitution).min
+      }
+    }
+    levensthein(s1, s2)
+  }
 
   def getClosestWordInDictionary(misspelledWord: String): String =
     misspelledWord match {
