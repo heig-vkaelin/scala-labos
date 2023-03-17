@@ -30,9 +30,13 @@ class TokenizerService(spellCheckerSvc: SpellCheckerService):
     }
     TokenizedImpl(tokens)
 
-    /*
-     take a string and return the corresponding token
-     */
+  /** Get the token corresponding to the given word
+    *
+    * @param word
+    *   the word to tokenize
+    * @return
+    *   the token corresponding to the given word
+    */
   def getToken(word: String): Token =
     word match {
       case "bonjour"                   => BONJOUR

@@ -44,6 +44,7 @@ class SpellCheckerImpl(val dictionary: Map[String, String])
     ).last
 
   // TODO: on garde ça ?
+
   def stringDistance(s1: String, s2: String): Int = {
     val memo = scala.collection.mutable.Map[(String, String), Int]()
 
@@ -68,8 +69,7 @@ class SpellCheckerImpl(val dictionary: Map[String, String])
     misspelledWord match {
       case word if word.forall(_.isDigit) => word
       case word if word.startsWith("_")   => word
-      case _                              =>
-        // get the closest word in the dictionary
+      case _ =>
         dictionary.minBy((key, _) => stringDistance(key, misspelledWord))._2
     }
 end SpellCheckerImpl

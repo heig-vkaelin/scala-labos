@@ -24,6 +24,6 @@ object ClinksCalculator:
     * @return
     *   n choose k
     */
-  def calculateCombination(n: Int, k: Int): BigInt = 
+  def calculateCombination(n: Int, k: Int): BigInt =
     factorial(n) / (factorial(k) * factorial(n - k))
 end ClinksCalculator
