@@ -14,9 +14,9 @@ class TokenizerService(spellCheckerSvc: SpellCheckerService):
   def tokenize(input: String): Tokenized =
     val words =
       input
-        .replaceAll("[.,!?*]", "") // enlever les ponctuations
-        .replaceAll("[']", " ") // remplacer les apostrophes par des espaces
-        .replaceAll("\\s{2,}", " ") // remplacer les espaces multiples
+        .replaceAll("[.,!?*]", "") // remove punctuation
+        .replaceAll("[']", " ") // replace apostrophes
+        .replaceAll("\\s{2,}", " ") // replace multiple spaces
         .trim()
         .split(" ")
         .filter(_.nonEmpty)

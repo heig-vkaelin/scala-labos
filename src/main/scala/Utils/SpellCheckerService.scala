@@ -1,7 +1,5 @@
 package Utils
 
-import scala.math.min
-
 trait SpellCheckerService:
   /** This dictionary is a Map object that contains valid words as keys and
     * their normalized equivalents as values (e.g. we want to normalize the
@@ -34,17 +32,13 @@ end SpellCheckerService
 class SpellCheckerImpl(val dictionary: Map[String, String])
     extends SpellCheckerService:
 
-  // TODO: ça dégage ?
-  def stringDistance_INCOMPREHENSIBLE(s1: String, s2: String): Int =
-    ((0 to s2.length).toList /: s1)((prev, x) =>
-      (prev zip prev.tail zip s2).scanLeft(prev.head + 1) {
-        case (h, ((d, v), y)) =>
-          min(min(h + 1, v + 1), d + (if (x == y) 0 else 1))
-      }
-    ).last
-
-  // TODO: on garde ça ?
-
+  /** We use a memoization technique to avoid recalculating the distance between
+    * two words that have already been compared. Source of the memo idea:
+    * https://oldfashionedsoftware.com/2009/11/19/string-distance-and-refactoring-in-scala/
+    *
+    * The implemented Levensthein algorithm is the recursive one from Wikipedia:
+    * https://fr.wikipedia.org/wiki/Distance_de_Levenshtein
+    */
   def stringDistance(s1: String, s2: String): Int = {
     val memo = scala.collection.mutable.Map[(String, String), Int]()
 
@@ -67,8 +61,7 @@ class SpellCheckerImpl(val dictionary: Map[String, String])
 
   def getClosestWordInDictionary(misspelledWord: String): String =
     misspelledWord match {
-      case word if word.forall(_.isDigit) => word
-      case word if word.startsWith("_")   => word
+      case word if word.startsWith("_") || word.forall(_.isDigit) => word
       case _ =>
         dictionary.minBy((key, _) => stringDistance(key, misspelledWord))._2
     }
