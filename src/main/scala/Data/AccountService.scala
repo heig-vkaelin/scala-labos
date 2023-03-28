@@ -8,6 +8,8 @@ trait AccountService:
     *   the name of the user whose account will be retrieve
     * @return
     *   the current balance of the user
+    * @throws NoSuchElementException
+    *   if the account does not exist
     */
   def getAccountBalance(user: String): Double
 
@@ -16,6 +18,8 @@ trait AccountService:
     *   the name of the user
     * @param balance
     *   the initial balance value
+    * @throws IllegalArgumentException
+    *   if the account already exists
     */
   def addAccount(user: String, balance: Double): Unit
 
@@ -34,13 +38,28 @@ trait AccountService:
     *   the amount to decrease
     * @return
     *   the new balance
+    * @throws NoSuchElementException
+    *   if the account does not exist
+    * @throws Exception
+    *   if the account does not have enough money
     */
   def purchase(user: String, amount: Double): Double
 
 class AccountImpl extends AccountService:
   // TODO - Part 2 Step 2
-  def getAccountBalance(user: String): Double = ???
-  def addAccount(user: String, balance: Double): Unit = ???
-  def isAccountExisting(user: String): Boolean = ???
-  def purchase(user: String, amount: Double): Double = ???
+  private val accounts = mutable.Map[String, Double]()
+
+  def getAccountBalance(user: String): Double =
+    accounts(user)
+  def addAccount(user: String, balance: Double = 30): Unit =
+    if isAccountExisting(user) then
+      throw new IllegalArgumentException("Account already exists")
+    else accounts.put(user, balance)
+  def isAccountExisting(user: String): Boolean =
+    accounts.contains(user)
+  def purchase(user: String, amount: Double): Double =
+    val balance = accounts(user)
+    // TODO vérifier sisa marche (si ça retourne bien le nouveau solde)
+    if balance >= amount then accounts(user) = balance - amount
+    else throw new Exception("Not enough money")
 end AccountImpl
