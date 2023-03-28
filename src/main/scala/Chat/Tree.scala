@@ -1,12 +1,10 @@
 package Chat
 
-/**
-  * This sealed trait represents a node of the tree.
+/** This sealed trait represents a node of the tree.
   */
 sealed trait ExprTree
 
-/**
-  * Declarations of the nodes' types.
+/** Declarations of the nodes' types.
   */
 object ExprTree:
   // TODO - Part 2 Step 3
