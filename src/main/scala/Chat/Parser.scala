@@ -40,14 +40,61 @@ class Parser(tokenized: Tokenized):
   // TODO - Part 2 Step 4
   def parsePhrases(): ExprTree =
     if curToken == BONJOUR then readToken()
-    if curToken == JE then
+
+    if curToken == QUEL then
       readToken()
       eat(ETRE)
-      if curToken == ASSOIFFE then
+      eat(LE)
+      eat(PRIX)
+      eat(DE)
+      Price(getProducts())
+    else if curToken == COMBIEN then
+      readToken()
+      eat(COUTER)
+      Price(getProducts())
+    else if curToken == JE then
+      readToken()
+
+      // Assoifé, affamé, pseudo
+      if curToken == ETRE then
         readToken()
-        Thirsty
-      else if curToken == AFFAME then
+        if curToken == ASSOIFFE then Thirsty
+        else if curToken == AFFAME then Hungry
+        else getName()
+      else if curToken == VOULOIR then
         readToken()
-        Hungry
-      else expected(ASSOIFFE, AFFAME)
+        if curToken == CONNAITRE then
+          readToken()
+          eat(MON)
+          eat(SOLDE)
+          Balance
+        else if curToken == COMMANDER then Command(getProducts())
+        else expected(COMMANDER, CONNAITRE)
+      else if curToken == ME then
+        readToken()
+        eat(APPELER)
+        getName()
+      else expected(ETRE, VOULOIR, ME)
     else expected(BONJOUR, JE)
+
+  def getName() =
+    val pseudo = eat(PSEUDO).substring(1)
+    Identification(pseudo)
+
+  def getProduct() =
+    val quantity = eat(NUM).toInt
+    val name = eat(PRODUIT)
+
+    if curToken == MARQUE then
+      val brand = eat(MARQUE)
+      Product(name, brand, quantity)
+    else DefaultProduct(name, quantity)
+
+  def getProducts(): ExprTree =
+    val product = getProduct()
+
+    readToken()
+
+    if curToken == ET then And(product, getProducts())
+    else if curToken == OU then Or(product, getProducts())
+    else product

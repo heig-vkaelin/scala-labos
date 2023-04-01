@@ -21,7 +21,7 @@ trait AccountService:
     * @throws IllegalArgumentException
     *   if the account already exists
     */
-  def addAccount(user: String, balance: Double): Unit
+  def addAccount(user: String, balance: Double = 30): Unit
 
   /** Indicate is an account exist
     * @param user
@@ -51,7 +51,7 @@ class AccountImpl extends AccountService:
 
   def getAccountBalance(user: String): Double =
     accounts(user)
-  def addAccount(user: String, balance: Double = 30): Unit =
+  def addAccount(user: String, balance: Double): Unit =
     if isAccountExisting(user) then
       throw new IllegalArgumentException("Account already exists")
     else accounts.put(user, balance)
@@ -60,6 +60,9 @@ class AccountImpl extends AccountService:
   def purchase(user: String, amount: Double): Double =
     val balance = accounts(user)
     // TODO vérifier sisa marche (si ça retourne bien le nouveau solde)
-    if balance >= amount then accounts(user) = balance - amount
+    if balance >= amount then
+      val newBalance = balance - amount
+      accounts(user) = newBalance
+      newBalance
     else throw new Exception("Not enough money")
 end AccountImpl

@@ -9,7 +9,7 @@ trait ProductService:
 
 class ProductImpl extends ProductService:
   // TODO - Part 2 Step 2
-  private val BEER = "beer"
+  private val BEER = "biere"
   private val CROISSANT = "croissant"
 
   private val default_products = Map(
@@ -32,5 +32,5 @@ class ProductImpl extends ProductService:
   def getPrice(product: ProductName, brand: String): Double =
     products.get(product).get(brand)
   def getDefaultBrand(product: ProductName): BrandName =
-    default_products.get(product)
+    default_products(product)
 end ProductImpl

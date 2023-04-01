@@ -11,3 +11,18 @@ object ExprTree:
   // Example cases
   case object Thirsty extends ExprTree
   case object Hungry extends ExprTree
+
+  // Operators
+  case class And(left: ExprTree, right: ExprTree) extends ExprTree
+  case class Or(left: ExprTree, right: ExprTree) extends ExprTree
+
+  // Request types
+  case class Identification(username: String) extends ExprTree
+  case class Command(expr: ExprTree) extends ExprTree
+  case object Balance extends ExprTree
+  case class Price(expr: ExprTree) extends ExprTree
+
+  // Product
+  case class Product(name: String, brand: String, quantity: Int)
+      extends ExprTree
+  case class DefaultProduct(name: String, quantity: Int) extends ExprTree
