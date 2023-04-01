@@ -16,9 +16,8 @@ class AnalyzerService(productSvc: ProductService, accountSvc: AccountService):
     case Or(left, right)  => Math.min(computePrice(left), computePrice(right))
     case Command(expr)    => computePrice(expr)
     case Product(name, brand, quantity) =>
-      productSvc.getPrice(name, brand) * quantity
-    case DefaultProduct(name, quantity) =>
-      computePrice(Product(name, productSvc.getDefaultBrand(name), quantity))
+      val b = brand.getOrElse(productSvc.getDefaultBrand(name))
+      productSvc.getPrice(name, b) * quantity
     case _ => 0.0
 
   def requiresLogging(session: Session, t: ExprTree): Boolean = t match
@@ -57,17 +56,18 @@ class AnalyzerService(productSvc: ProductService, accountSvc: AccountService):
       case command @ Command(expr) =>
         val price = computePrice(command)
         if price > accountSvc.getAccountBalance(user.get) then
-          return "Vous n'avez pas assez d'argent pour effectuer cette commande !"
+          return "Vous n'avez pas assez d'argent pour effectuer cette commande ! Vous êtes pauvre (:"
 
         val newBalance = accountSvc.purchase(user.get, price)
         s"Voici donc ${inner(expr)} ! Cela coûte CHF ${price} et votre nouveau solde est de ${newBalance}"
 
-      case Product(name, brand, quantity) => s"${quantity} ${brand} ${name}"
-      case DefaultProduct(name, quantity) =>
-        inner(Product(name, productSvc.getDefaultBrand(name), quantity))
+      case Product(name, brand, quantity) =>
+        productSvc.toString(name, brand, quantity)
 
       case And(left, right) =>
         inner(left) + " et " + inner(right)
-      case _ => "Je ne comprends pas votre demande !"
+      case Or(left, right) =>
+        if computePrice(left) <= computePrice(right) then s"${inner(left)}"
+        else s"${inner(right)}"
 
 end AnalyzerService

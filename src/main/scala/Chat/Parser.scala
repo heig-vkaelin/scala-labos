@@ -68,7 +68,9 @@ class Parser(tokenized: Tokenized):
           eat(MON)
           eat(SOLDE)
           Balance
-        else if curToken == COMMANDER then Command(getProducts())
+        else if curToken == COMMANDER then
+          readToken()
+          Command(getProducts())
         else expected(COMMANDER, CONNAITRE)
       else if curToken == ME then
         readToken()
@@ -87,14 +89,20 @@ class Parser(tokenized: Tokenized):
 
     if curToken == MARQUE then
       val brand = eat(MARQUE)
-      Product(name, brand, quantity)
-    else DefaultProduct(name, quantity)
+      Product(name, Some(brand), quantity)
+    else Product(name, None, quantity)
 
   def getProducts(): ExprTree =
     val product = getProduct()
 
-    readToken()
+    def eval(exprTree: ExprTree): ExprTree =
+      if curToken == ET then
+        readToken()
+        eval(And(exprTree, getProduct()))
+      else if curToken == OU then
+        readToken()
+        eval(Or(exprTree, getProduct()))
+      else exprTree
+    end eval
 
-    if curToken == ET then And(product, getProducts())
-    else if curToken == OU then Or(product, getProducts())
-    else product
+    eval(product)

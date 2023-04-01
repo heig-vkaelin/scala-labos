@@ -23,6 +23,5 @@ object ExprTree:
   case class Price(expr: ExprTree) extends ExprTree
 
   // Product
-  case class Product(name: String, brand: String, quantity: Int)
+  case class Product(name: String, brand: Option[String], quantity: Int)
       extends ExprTree
-  case class DefaultProduct(name: String, quantity: Int) extends ExprTree
