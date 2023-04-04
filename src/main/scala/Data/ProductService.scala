@@ -14,6 +14,7 @@ trait ProductService:
 
 class ProductImpl extends ProductService:
   // TODO - Part 2 Step 2
+  // Products available
   private val BEER = "biere"
   private val CROISSANT = "croissant"
 
@@ -34,8 +35,21 @@ class ProductImpl extends ProductService:
     CROISSANT -> Map("maison" -> 2.0, "cailler" -> 2.0)
   )
 
+  /** Return the price of a given product.
+    * @param product
+    *   : the product name
+    * @param brand
+    *   : the brand name
+    * @return
+    */
   def getPrice(product: ProductName, brand: String): Double =
     products.get(product).get(brand)
+
+  /** Return the default brand for a given product.
+    * @param product
+    *   : the product name
+    * @return
+    */
   def getDefaultBrand(product: ProductName): BrandName =
     default_products(product)
 
