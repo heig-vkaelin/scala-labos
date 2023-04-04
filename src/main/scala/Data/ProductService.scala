@@ -56,6 +56,15 @@ class ProductImpl extends ProductService:
   def getDefaultBrand(product: ProductName): BrandName =
     default_products(product)
 
+    /** Return a string representation of a product.
+      * @param name
+      *   : the product name
+      * @param brand
+      *   : the optional brand name
+      * @param quantity
+      *   : the quantity of the product
+      * @return
+      */
   def toString(
       name: ProductName,
       brand: Option[BrandName],
