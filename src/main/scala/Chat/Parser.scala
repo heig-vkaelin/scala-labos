@@ -47,11 +47,11 @@ class Parser(tokenized: Tokenized):
       eat(LE)
       eat(PRIX)
       eat(DE)
-      Price(getProducts())
+      Price(parseProducts())
     else if curToken == COMBIEN then
       readToken()
       eat(COUTER)
-      Price(getProducts())
+      Price(parseProducts())
     else if curToken == JE then
       readToken()
 
@@ -60,7 +60,7 @@ class Parser(tokenized: Tokenized):
         readToken()
         if curToken == ASSOIFFE then Thirsty
         else if curToken == AFFAME then Hungry
-        else getName()
+        else parseName()
       else if curToken == VOULOIR then
         readToken()
         if curToken == CONNAITRE then
@@ -70,20 +70,22 @@ class Parser(tokenized: Tokenized):
           Balance
         else if curToken == COMMANDER then
           readToken()
-          Command(getProducts())
+          Command(parseProducts())
         else expected(COMMANDER, CONNAITRE)
       else if curToken == ME then
         readToken()
         eat(APPELER)
-        getName()
+        parseName()
       else expected(ETRE, VOULOIR, ME)
     else expected(BONJOUR, JE)
 
-  def getName() =
+    /** Parse a name */
+  def parseName() =
     val pseudo = eat(PSEUDO).substring(1)
     Identification(pseudo)
 
-  def getProduct() =
+    /** Parse a single product */
+  def parseProduct() =
     val quantity = eat(NUM).toInt
     val name = eat(PRODUIT)
 
@@ -92,16 +94,17 @@ class Parser(tokenized: Tokenized):
       Product(name, Some(brand), quantity)
     else Product(name, None, quantity)
 
-  def getProducts(): ExprTree =
-    val product = getProduct()
+    /** Parse a potential list of products, separated by ET or OU */
+  def parseProducts(): ExprTree =
+    val product = parseProduct()
 
     def eval(exprTree: ExprTree): ExprTree =
       if curToken == ET then
         readToken()
-        eval(And(exprTree, getProduct()))
+        eval(And(exprTree, parseProduct()))
       else if curToken == OU then
         readToken()
-        eval(Or(exprTree, getProduct()))
+        eval(Or(exprTree, parseProduct()))
       else exprTree
     end eval
 

@@ -20,7 +20,14 @@ class AnalyzerService(productSvc: ProductService, accountSvc: AccountService):
       productSvc.getPrice(name, b) * quantity
     case _ => 0.0
 
-  def requiresLogging(session: Session, t: ExprTree): Boolean = t match
+    /** Verify if the current node requires user to be logged.
+      *
+      * @param t
+      *   : the current node
+      * @return
+      *   true if the user needs to be logged, false otherwise
+      */
+  def requiresLogging(t: ExprTree): Boolean = t match
     case Command(_) | Balance => true
     case _                    => false
 
@@ -30,7 +37,7 @@ class AnalyzerService(productSvc: ProductService, accountSvc: AccountService):
     *   the output text of the current node
     */
   def reply(session: Session)(t: ExprTree): String =
-    if requiresLogging(session, t) && session.getCurrentUser.isEmpty then
+    if requiresLogging(t) && session.getCurrentUser.isEmpty then
       return "Vous devez vous identifier pour pouvoir faire cette action !"
 
     // you can use this to avoid having to pass the session when doing recursion
