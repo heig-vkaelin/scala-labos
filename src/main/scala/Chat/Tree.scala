@@ -1,5 +1,7 @@
 package Chat
 
+import Data.ProductService.{ProductName, BrandName}
+
 /** This sealed trait represents a node of the tree.
   */
 sealed trait ExprTree
@@ -23,5 +25,5 @@ object ExprTree:
   case class Price(expr: ExprTree) extends ExprTree
 
   // Product
-  case class Product(name: String, brand: Option[String], quantity: Int)
+  case class Product(name: ProductName, brand: Option[BrandName], quantity: Int)
       extends ExprTree

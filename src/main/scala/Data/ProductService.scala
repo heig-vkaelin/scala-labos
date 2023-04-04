@@ -1,9 +1,8 @@
 package Data
 
-trait ProductService:
-  type BrandName = String
-  type ProductName = String
+import ProductService.*
 
+trait ProductService:
   def getPrice(product: ProductName, brand: BrandName): Double
   def getDefaultBrand(product: ProductName): BrandName
   def toString(
@@ -11,6 +10,10 @@ trait ProductService:
       brand: Option[BrandName],
       quantity: Int
   ): String
+
+object ProductService:
+  type BrandName = String
+  type ProductName = String
 
 class ProductImpl extends ProductService:
   // TODO - Part 2 Step 2
