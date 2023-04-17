@@ -11,7 +11,6 @@ class TokenizerService(spellCheckerSvc: SpellCheckerService):
     * @return
     *   A Tokenizer which allows iteration over the tokens of the input
     */
-  // TODO - Part 2 Step 1
   def tokenize(input: String): Tokenized =
     val words =
       input
@@ -40,30 +39,29 @@ class TokenizerService(spellCheckerSvc: SpellCheckerService):
     */
   def getToken(word: String): Token =
     word match {
-      case "bonjour"   => BONJOUR
-      case "je"        => JE
-      case "etre"      => ETRE
-      case "vouloir"   => VOULOIR
-      case "assoiffe"  => ASSOIFFE
-      case "affame"    => AFFAME
-      case "biere"     => PRODUIT
-      case "croissant" => PRODUIT
-      case "et"        => ET
-      case "ou"        => OU
-      case "svp"       => SVP
-      case "quel"      => QUEL
-      case "le"        => LE
-      case "prix"      => PRIX
-      case "de"        => DE
-      case "combien"   => COMBIEN
-      case "couter"    => COUTER
-      case "commander" => COMMANDER
-      case "connaitre" => CONNAITRE
-      case "mon"       => MON
-      case "solde"     => SOLDE
-      case "me"        => ME
-      case "appeler"   => APPELER
-      // Marques
+      case "bonjour"                   => BONJOUR
+      case "je"                        => JE
+      case "etre"                      => ETRE
+      case "vouloir"                   => VOULOIR
+      case "assoiffe"                  => ASSOIFFE
+      case "affame"                    => AFFAME
+      case "biere"                     => PRODUIT
+      case "croissant"                 => PRODUIT
+      case "et"                        => ET
+      case "ou"                        => OU
+      case "svp"                       => SVP
+      case "quel"                      => QUEL
+      case "le"                        => LE
+      case "prix"                      => PRIX
+      case "de"                        => DE
+      case "combien"                   => COMBIEN
+      case "couter"                    => COUTER
+      case "commander"                 => COMMANDER
+      case "connaitre"                 => CONNAITRE
+      case "mon"                       => MON
+      case "solde"                     => SOLDE
+      case "me"                        => ME
+      case "appeler"                   => APPELER
       case "maison"                    => MARQUE
       case "cailler"                   => MARQUE
       case "farmer"                    => MARQUE

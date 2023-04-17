@@ -37,7 +37,6 @@ class Parser(tokenized: Tokenized):
     )
 
   /** the root method of the parser: parses an entry phrase */
-  // TODO - Part 2 Step 4
   def parsePhrases(): ExprTree =
     if curToken == BONJOUR then readToken()
 
@@ -55,7 +54,6 @@ class Parser(tokenized: Tokenized):
     else if curToken == JE then
       readToken()
 
-      // Assoifé, affamé, pseudo
       if curToken == ETRE then
         readToken()
         if curToken == ASSOIFFE then Thirsty

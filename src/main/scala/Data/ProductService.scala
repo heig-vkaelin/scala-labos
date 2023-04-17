@@ -16,7 +16,6 @@ object ProductService:
   type ProductName = String
 
 class ProductImpl extends ProductService:
-  // TODO - Part 2 Step 2
   // Products available
   private val BEER = "biere"
   private val CROISSANT = "croissant"

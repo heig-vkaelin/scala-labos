@@ -10,7 +10,6 @@ class AnalyzerService(productSvc: ProductService, accountSvc: AccountService):
     * @return
     *   the result of the computation
     */
-  // TODO - Part 2 Step 3
   def computePrice(t: ExprTree): Double = t match
     case And(left, right) => computePrice(left) + computePrice(right)
     case Or(left, right)  => Math.min(computePrice(left), computePrice(right))
@@ -44,8 +43,6 @@ class AnalyzerService(productSvc: ProductService, accountSvc: AccountService):
     val inner: ExprTree => String = reply(session)
     val user = session.getCurrentUser
     t match
-      // TODO - Part 2 Step 3
-      // Example cases
       case Thirsty =>
         "Eh bien, la chance est de votre côté, car nous offrons les meilleures bières de la région !"
       case Hungry =>

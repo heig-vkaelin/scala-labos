@@ -46,7 +46,6 @@ trait AccountService:
   def purchase(user: String, amount: Double): Double
 
 class AccountImpl extends AccountService:
-  // TODO - Part 2 Step 2
   private val accounts = mutable.Map[String, Double]()
 
   def getAccountBalance(user: String): Double =
@@ -59,7 +58,6 @@ class AccountImpl extends AccountService:
     accounts.contains(user)
   def purchase(user: String, amount: Double): Double =
     val balance = accounts(user)
-    // TODO vérifier sisa marche (si ça retourne bien le nouveau solde)
     if balance >= amount then
       val newBalance = balance - amount
       accounts(user) = newBalance
