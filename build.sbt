@@ -10,4 +10,8 @@ lazy val root = project
         "org.scalactic" %% "scalactic" % "3.2.15",
         "org.scalatest" %% "scalatest" % "3.2.15" % "test",
     ),
+    libraryDependencies ++= List(        
+        "com.lihaoyi" %% "scalatags" % "0.12.0",
+        "com.lihaoyi" %% "cask" % "0.9.1",
+    ),
   )
