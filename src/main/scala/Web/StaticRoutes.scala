@@ -5,6 +5,10 @@ package Web
 class StaticRoutes()(implicit val log: cask.Logger) extends cask.Routes:
   // TODO - Part 3 Step 1: Make the resources files (`.js` and `.css`) available to the browser.
   //      Do not forget to link to them from your HTML.
+  @cask.staticResources("/static/js")
+  def staticJSFiles() = "./js"
+  @cask.staticResources("/static/css")
+  def staticCSSFiles() = "./css"
 
   initialize()
 end StaticRoutes

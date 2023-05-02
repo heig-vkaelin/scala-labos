@@ -5,13 +5,14 @@ lazy val root = project
   .settings(
     name := "Bot-tender",
     version := "0.2.1",
+    fork := true,
     scalaVersion := scala3Version,
     libraryDependencies ++= List(
-        "org.scalactic" %% "scalactic" % "3.2.15",
-        "org.scalatest" %% "scalatest" % "3.2.15" % "test",
+      "org.scalactic" %% "scalactic" % "3.2.15",
+      "org.scalatest" %% "scalatest" % "3.2.15" % "test"
     ),
-    libraryDependencies ++= List(        
-        "com.lihaoyi" %% "scalatags" % "0.12.0",
-        "com.lihaoyi" %% "cask" % "0.9.1",
-    ),
+    libraryDependencies ++= List(
+      "com.lihaoyi" %% "scalatags" % "0.12.0",
+      "com.lihaoyi" %% "cask" % "0.9.1"
+    )
   )
