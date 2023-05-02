@@ -29,7 +29,7 @@ class ProductImpl extends ProductService:
     BEER -> Map(
       "boxer" -> 1.0,
       "farmer" -> 1.0,
-      "wittek" -> 2.0,
+      "wittekop" -> 2.0,
       "punkipa" -> 3.0,
       "jackhammer" -> 3.0,
       "tenebreuse" -> 4.0
@@ -45,7 +45,7 @@ class ProductImpl extends ProductService:
     * @return
     */
   def getPrice(product: ProductName, brand: String): Double =
-    products.get(product).get(brand)
+    products(product)(brand)
 
   /** Return the default brand for a given product.
     * @param product
