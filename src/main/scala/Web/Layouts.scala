@@ -23,9 +23,14 @@ object Layouts:
     * @return
     *   the nav element
     */
-  private def navElem(text: String, linkHref: String) =
+  private def navElem(
+      text: String,
+      linkHref: String,
+      additionnalText: Option[String] = None
+  ) =
     tag("nav")(
       a(cls := "nav-brand")("Bot-Tender"),
+      div(additionnalText),
       div(
         cls := "nav-item"
       )(
@@ -116,7 +121,9 @@ object Layouts:
       headElem(),
       body(
         session.getCurrentUser
-          .map(_ => navElem("Logout", "/logout"))
+          .map(username =>
+            navElem("Logout", "/logout", Some(s"Hello $username!"))
+          )
           .getOrElse(navElem("Login", "/login")),
         div(
           cls := "content"

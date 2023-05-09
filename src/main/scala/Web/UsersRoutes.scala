@@ -51,6 +51,11 @@ class UsersRoutes(accountSvc: AccountService, sessionSvc: SessionService)(
 
   //
   // TODO - Part 3 Step 3d: Reset the current session and display a successful logout page.
+  @getSession(sessionSvc)
+  @cask.get("/logout")
+  def logout()(session: Session) =
+    session.reset()
+    Layouts.successPage("You have been logged out!")
 
   initialize()
 end UsersRoutes
