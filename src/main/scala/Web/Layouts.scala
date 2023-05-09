@@ -72,7 +72,7 @@ object Layouts:
       if errorText.isEmpty then display := "none"
     )(errorText.getOrElse("")),
     tag("label")(attr("for") := inputId)(label),
-    input(id := inputId, tpe := "text"),
+    input(id := inputId, name := inputId, tpe := "text"),
     input(tpe := "submit", value := btnText)
   )
 
@@ -143,7 +143,7 @@ object Layouts:
       )
     )
 
-  def loginPage() =
+  def loginPage(loginError: Option[String], registerError: Option[String]) =
     html(
       headElem(),
       body(
@@ -154,27 +154,41 @@ object Layouts:
           h1("Login"),
           formElem(
             "loginForm",
+            None,
             Some("/login"),
             Some("post"),
-            None,
             "Username:",
             "errorLogin",
-            None,
+            loginError,
             "loginInput",
             "Envoyer"
           ),
           h1("Register"),
           formElem(
             "registerForm",
+            None,
             Some("/register"),
             Some("post"),
-            None,
             "Username:",
             "errorRegister",
-            None,
+            registerError,
             "registerInput",
             "Envoyer"
           )
+        )
+      )
+    )
+
+  def successPage(message: String) =
+    html(
+      headElem(),
+      body(
+        navElem("Go to the message board", "/"),
+        div(
+          cls := "content"
+        )(
+          h1("Success!"),
+          div(message)
         )
       )
     )
