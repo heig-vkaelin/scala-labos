@@ -49,6 +49,14 @@ trait MessageService:
 class MessageImpl extends MessageService:
   // TODO - Part 3 Step 4a: Store the messages and the corresponding user in memory.
   //       Implement methods to add new messages, to get the last 20 messages and to delete all existing messages.
+  case class Message(
+      sender: Username,
+      msg: MsgContent,
+      mention: Option[Username],
+      exprType: Option[ExprTree],
+      replyToId: Option[Long]
+  )
+  private var messages: List[Message] = List()
 
   override def add(
       sender: Username,
@@ -57,10 +65,14 @@ class MessageImpl extends MessageService:
       exprType: Option[ExprTree] = None,
       replyToId: Option[Long] = None
   ): Long =
-    ???
+    val id = messages.length + 1
+    messages = Message(sender, msg, mention, exprType, replyToId) +: messages
+    id
 
   override def getLatestMessages(n: Int) =
-    ???
+    messages
+      .take(n)
+      .map(m => (m.sender, m.msg))
 
   override def deleteHistory(): Unit =
-    ???
+    messages = Nil
