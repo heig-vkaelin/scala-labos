@@ -33,7 +33,6 @@ class UsersRoutes(accountSvc: AccountService, sessionSvc: SessionService)(
       Layouts.successPage("You are now logged in!")
     else Layouts.loginPage(Some("The specified user does not exist"), None)
 
-  //
   // TODO - Part 3 Step 3c: Process the register information sent by the form with POST to `/register`,
   //      create the user, set the user in the provided session and display a successful
   //      register page.
@@ -49,7 +48,6 @@ class UsersRoutes(accountSvc: AccountService, sessionSvc: SessionService)(
       session.setCurrentUser(registerInput)
       Layouts.successPage("You have been registered!")
 
-  //
   // TODO - Part 3 Step 3d: Reset the current session and display a successful logout page.
   @getSession(sessionSvc)
   @cask.get("/logout")

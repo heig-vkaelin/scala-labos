@@ -150,6 +150,15 @@ object Layouts:
       )
     )
 
+    /** Display the login and register page of the application
+      *
+      * @param loginError
+      *   the error message to display for the login form
+      * @param registerError
+      *   the error message to display for the register form
+      * @return
+      *   the HTML page
+      */
   def loginPage(loginError: Option[String], registerError: Option[String]) =
     html(
       headElem(),
@@ -186,6 +195,13 @@ object Layouts:
       )
     )
 
+  /** Display the success page of the application
+    *
+    * @param message
+    *   the message to display
+    * @return
+    *   the HTML page
+    */
   def successPage(message: String) =
     html(
       headElem(),
