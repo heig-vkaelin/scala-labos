@@ -53,13 +53,18 @@ object Layouts:
   private def formElem(
       idForm: String,
       onSubmit: Option[String],
+      actionForm: Option[String],
+      methodForm: Option[String],
       label: String,
       errorId: String,
       errorText: Option[String],
-      inputId: String
+      inputId: String,
+      btnText: String
   ) = form(
     id := idForm,
-    onsubmit := onSubmit.getOrElse("")
+    onsubmit := onSubmit.getOrElse(""),
+    action := actionForm.getOrElse(""),
+    method := methodForm.getOrElse("")
   )(
     div(
       id := errorId,
@@ -68,7 +73,7 @@ object Layouts:
     )(errorText.getOrElse("")),
     tag("label")(attr("for") := inputId)(label),
     input(id := inputId, tpe := "text"),
-    input(tpe := "submit")
+    input(tpe := "submit", value := btnText)
   )
 
   /** Display a message (not used for now)
@@ -126,10 +131,49 @@ object Layouts:
           formElem(
             "msgForm",
             Some("submitMessageForm(); return false;"),
+            None,
+            None,
             "Your message:",
             "errorDiv",
             None,
-            "messageInput"
+            "messageInput",
+            "Envoyer"
+          )
+        )
+      )
+    )
+
+  def loginPage() =
+    html(
+      headElem(),
+      body(
+        navElem("Go to the message board", "/"),
+        div(
+          cls := "content"
+        )(
+          h1("Login"),
+          formElem(
+            "loginForm",
+            Some("/login"),
+            Some("post"),
+            None,
+            "Username:",
+            "errorLogin",
+            None,
+            "loginInput",
+            "Envoyer"
+          ),
+          h1("Register"),
+          formElem(
+            "registerForm",
+            Some("/register"),
+            Some("post"),
+            None,
+            "Username:",
+            "errorRegister",
+            None,
+            "registerInput",
+            "Envoyer"
           )
         )
       )
