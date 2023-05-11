@@ -100,12 +100,9 @@ class MessagesRoutes(
   @cask.get("/clearHistory")
   def clearHistory() =
     msgSvc.deleteHistory()
-    subscribers.foreach(
-      sendMessageToClient(
-        _,
-        Layouts.placeholderElem("No messages have been sent yet").toString
-      )
-    )
+    val placeholder =
+      Layouts.placeholderElem("No messages have been sent yet").toString
+    subscribers.foreach(sendMessageToClient(_, placeholder))
   end clearHistory
 
   // TODO - Part 3 Step 5: Modify the code of step 4b to process the messages sent to the bot (message
