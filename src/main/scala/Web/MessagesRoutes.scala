@@ -81,7 +81,7 @@ class MessagesRoutes(
       response(true, None)
     end if
   end sendMessage
-  //
+
   // TODO - Part 3 Step 4c: Process and store the new websocket connection made to `/subscribe`
   @cask.websocket("/subscribe")
   def subscribe(): cask.WebsocketResult =
@@ -95,9 +95,19 @@ class MessagesRoutes(
       }
     }
   end subscribe
-  //
+
   // TODO - Part 3 Step 4d: Delete the message history when a GET is made to `/clearHistory`
-  //
+  @cask.get("/clearHistory")
+  def clearHistory() =
+    msgSvc.deleteHistory()
+    subscribers.foreach(
+      sendMessageToClient(
+        _,
+        Layouts.placeholderElem("No messages have been sent yet").toString
+      )
+    )
+  end clearHistory
+
   // TODO - Part 3 Step 5: Modify the code of step 4b to process the messages sent to the bot (message
   //      starts with `@bot `). This message and its reply from the bot will be added to the message
   //      store together.
