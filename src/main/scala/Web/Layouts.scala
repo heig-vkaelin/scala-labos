@@ -81,33 +81,37 @@ object Layouts:
     input(tpe := "submit", value := btnText)
   )
 
+  def placeholderElem(text: String) =
+    div(cls := "msg", textAlign.center)(text)
+
   /** Display a message (not used for now)
     *
     * @param author
     *   the author name
-    * @param mention
-    *   the mention name
     * @param content
     *   the content of the message
     * @return
     *   the message element
     */
-  private def messageElem(author: String, mention: String, content: String) =
+  def messageElem(author: String, content: Frag) =
     div(
       cls := "msg"
     )(
       span(
         cls := "author"
       )(author),
-      span(
-        cls := "msg-content"
-      )(
-        span(
-          cls := "mention"
-        )(mention),
-        raw(content)
-      )
+      content
     )
+
+  /** Display the content of a message
+    *
+    * @param content
+    *   the content of the message
+    * @return
+    *   the message content element
+    */
+  def messageContent(content: String) =
+    span(cls := "msg-content")(content)
 
   /** Display the index page of the application
     *
@@ -131,9 +135,7 @@ object Layouts:
           div(
             id := "boardMessage"
           )(
-            div(cls := "msg", textAlign.center)(
-              "Please wait! The messages are loading..."
-            )
+            placeholderElem("Please wait! The messages are loading...")
           ),
           formElem(
             "msgForm",
