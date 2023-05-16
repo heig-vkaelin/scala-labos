@@ -1,4 +1,7 @@
-document.addEventListener('DOMContentLoaded', function(){
+document.addEventListener('DOMContentLoaded', function () {
+    // Don't load socket on pages without the boardMessage div
+    if (!document.querySelector('#boardMessage')) return;
+
     const socket = new WebSocket("ws://" + location.host + "/subscribe");
     // when a new message is received remplace the content of the div 
     //   with the id "boardMessage" with the content of the message
