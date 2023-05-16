@@ -107,11 +107,16 @@ object Layouts:
     *
     * @param content
     *   the content of the message
+    * @param mention
+    *   the optional mention of the message
     * @return
     *   the message content element
     */
-  def messageContent(content: String) =
-    span(cls := "msg-content")(content)
+  def messageContent(content: String, mention: Option[String] = None) =
+    span(cls := "msg-content")(
+      if mention.isDefined then span(cls := "mention")(mention.get) else "",
+      content
+    )
 
   /** Display the index page of the application
     *

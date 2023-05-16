@@ -5,6 +5,9 @@ import Data.{MessageService, AccountService, SessionService, Session}
 import scala.collection.mutable.ListBuffer
 import cask.endpoints.WsChannelActor
 import castor.Context.Simple.global
+import Chat.{Parser, UnexpectedTokenException}
+import Chat.ExprTree.Identification
+import Chat.ExprTree
 
 /** Assembles the routes dealing with the message board:
   *   - One route to display the home page
@@ -27,6 +30,7 @@ class MessagesRoutes(
 
   private def response(success: Boolean, error: Option[String]) =
     ujson.Obj("success" -> success, "err" -> error.getOrElse(""))
+  end response
 
   private def latestMessagesAsString(number: Int) =
     if msgSvc.getLatestMessages(number).isEmpty then
@@ -37,17 +41,77 @@ class MessagesRoutes(
         .reverse
         .map((author, content) => Layouts.messageElem(author, content).toString)
         .reduceLeft(_ + _)
+  end latestMessagesAsString
 
   private def sendMessageToClient(
       channel: cask.endpoints.WsChannelActor,
       message: String
   ) =
     channel.send(cask.Ws.Text(message))
+  end sendMessageToClient
+
+  private def getMention(msg: String): Option[String] =
+    if msg.charAt(0) == '@' then Some(msg.substring(0, msg.indexOf(" ")))
+    else None
+  end getMention
+
+  private def botResponse(
+      message: String,
+      mention: Option[String],
+      expr: Option[ExprTree],
+      botMessage: String
+  )(session: Session) =
+    val replyId = msgSvc.add(
+      session.getCurrentUser.get,
+      Layouts.messageContent(message, mention),
+      mention,
+      expr
+    )
+    msgSvc.add(
+      "BotTender",
+      Layouts.messageContent(botMessage),
+      session.getCurrentUser,
+      None,
+      Some(replyId)
+    )
+  end botResponse
+
+  private def processMessage(message: String)(
+      session: Session
+  ): Option[String] =
+    val mention = getMention(message)
+
+    if mention.isDefined && mention.get == "@bot" then
+      val content = message.substring(message.indexOf(" "))
+      val tokenized = tokenizerSvc.tokenize(content)
+      try {
+        val expr = new Parser(tokenized).parsePhrases()
+        val answer = expr match
+          case Identification(username) => s"Bonjour $username"
+          case _                        => analyzerSvc.reply(session)(expr)
+
+        botResponse(content, mention, Some(expr), answer)(session)
+      } catch {
+        case e: Chat.UnexpectedTokenException =>
+          return Some(e.getMessage)
+      }
+    else
+      msgSvc.add(
+        session.getCurrentUser.get,
+        Layouts.messageContent(message),
+        mention
+      )
+
+    val messages = latestMessagesAsString(20)
+    subscribers.foreach(sendMessageToClient(_, messages))
+    None
+  end processMessage
 
   @getSession(sessionSvc)
   @cask.get("/")
   def index()(session: Session) =
     Layouts.indexPage(session)
+  end index
 
   // TODO - Part 3 Step 4b:
   // Process the new messages sent as JSON object to `/send`. The JSON looks
@@ -70,15 +134,8 @@ class MessagesRoutes(
     else if session.getCurrentUser.isEmpty then
       response(false, Some("You must be logged to send a message"))
     else
-      msgSvc.add(
-        session.getCurrentUser.get,
-        Layouts.messageContent(msg)
-      )
-      // Send the last 20 messages to all the subscribers
-      val messages = latestMessagesAsString(20)
-      subscribers.foreach(sendMessageToClient(_, messages))
-
-      response(true, None)
+      val error = processMessage(msg)(session)
+      response(error.isEmpty, error)
     end if
   end sendMessage
 
