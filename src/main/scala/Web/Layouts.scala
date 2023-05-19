@@ -114,7 +114,8 @@ object Layouts:
     */
   def messageContent(content: String, mention: Option[String] = None) =
     span(cls := "msg-content")(
-      if mention.isDefined then span(cls := "mention")(mention.get) else "",
+      if mention.isDefined then span(cls := "mention")(s"@${mention.get}")
+      else "",
       content
     )
 
