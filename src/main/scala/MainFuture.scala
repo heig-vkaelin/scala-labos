@@ -14,9 +14,9 @@ object MainFuture extends cask.Main:
   val msgSvc: MessageService = new MessageConcurrentImpl(new MessageImpl())
 
   val allRoutes = Seq(
-      StaticRoutes(),
-      UsersRoutes(accountSvc, sessionSvc),
-      MessagesRoutes(tokenizerSvc, analyzerSvc, msgSvc, accountSvc, sessionSvc),
+    StaticRoutes(),
+    UsersRoutes(accountSvc, sessionSvc),
+    MessagesRoutes(tokenizerSvc, analyzerSvc, msgSvc, accountSvc, sessionSvc)
   )
 
   override def port: Int = 8980
