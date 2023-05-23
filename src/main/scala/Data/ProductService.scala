@@ -1,6 +1,7 @@
 package Data
 
 import ProductService.*
+import scala.concurrent.duration.*
 
 trait ProductService:
   def getPrice(product: ProductName, brand: BrandName): Double
@@ -15,6 +16,8 @@ object ProductService:
   type BrandName = String
   type ProductName = String
 
+  case class Delivery(mean: Duration, std: Duration, successRate: Double)
+
 class ProductImpl extends ProductService:
   // Products available
   private val BEER = "biere"
@@ -27,14 +30,17 @@ class ProductImpl extends ProductService:
 
   private val products = Map(
     BEER -> Map(
-      "boxer" -> 1.0,
-      "farmer" -> 1.0,
-      "wittekop" -> 2.0,
-      "punkipa" -> 3.0,
-      "jackhammer" -> 3.0,
-      "tenebreuse" -> 4.0
+      "boxer" -> (1.0, Delivery(1.second, 0.second, 0.9)),
+      "farmer" -> (1.0, Delivery(1.second, 0.second, 0.9)),
+      "wittekop" -> (2.0, Delivery(1.second, 0.second, 0.9)),
+      "punkipa" -> (3.0, Delivery(1.second, 0.second, 0.9)),
+      "jackhammer" -> (3.0, Delivery(1.second, 0.second, 0.9)),
+      "tenebreuse" -> (4.0, Delivery(1.second, 0.second, 0.9))
     ),
-    CROISSANT -> Map("maison" -> 2.0, "cailler" -> 2.0)
+    CROISSANT -> Map(
+      "maison" -> (2.0, Delivery(1.second, 0.second, 0.9)),
+      "cailler" -> (2.0, Delivery(1.second, 0.second, 0.9))
+    )
   )
 
   /** Return the price of a given product.
@@ -45,7 +51,7 @@ class ProductImpl extends ProductService:
     * @return
     */
   def getPrice(product: ProductName, brand: String): Double =
-    products(product)(brand)
+    products(product)(brand)._1
 
   /** Return the default brand for a given product.
     * @param product
