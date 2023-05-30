@@ -57,10 +57,10 @@ class AccountImpl extends AccountService:
   def isAccountExisting(user: String): Boolean =
     accounts.contains(user)
   def purchase(user: String, amount: Double): Double =
-    val balance = accounts(user)
-    if balance >= amount then
-      val newBalance = balance - amount
-      accounts(user) = newBalance
-      newBalance
-    else throw new Exception("Not enough money")
+    accounts
+      .updateWith(user)(current =>
+        if current.get >= amount then Some(current.get - amount)
+        else throw new Exception("Not enough money")
+      )
+      .get
 end AccountImpl
