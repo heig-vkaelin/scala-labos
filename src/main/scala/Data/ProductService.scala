@@ -33,16 +33,16 @@ class ProductImpl extends ProductService:
 
   private val products = Map(
     BEER -> Map(
-      "boxer" -> (1.0, Delivery(1.second, 0.second, 0.9)),
-      "farmer" -> (1.0, Delivery(1.second, 0.second, 0.9)),
-      "wittekop" -> (2.0, Delivery(1.second, 0.second, 0.9)),
-      "punkipa" -> (3.0, Delivery(1.second, 0.second, 0.9)),
-      "jackhammer" -> (3.0, Delivery(1.second, 0.second, 0.9)),
-      "tenebreuse" -> (4.0, Delivery(1.second, 0.second, 0.9))
+      "boxer" -> (1.0, Delivery(1.second, 0.2.second, 0.9)),
+      "farmer" -> (1.0, Delivery(0.5.second, 0.2.second, 0.7)),
+      "wittekop" -> (2.0, Delivery(1.5.second, 0.2.second, 0.9)),
+      "punkipa" -> (3.0, Delivery(3.second, 0.2.second, 0.8)),
+      "jackhammer" -> (3.0, Delivery(2.5.second, 0.2.second, 0.3)),
+      "tenebreuse" -> (4.0, Delivery(2.second, 0.2.second, 0.1))
     ),
     CROISSANT -> Map(
-      "maison" -> (2.0, Delivery(1.second, 0.second, 0.9)),
-      "cailler" -> (2.0, Delivery(1.second, 0.second, 0.9))
+      "maison" -> (2.0, Delivery(2.second, 0.2.second, 0.9)),
+      "cailler" -> (2.0, Delivery(3.5.second, 0.2.second, 0.7))
     )
   )
 
