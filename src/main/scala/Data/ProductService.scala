@@ -2,6 +2,8 @@ package Data
 
 import ProductService.*
 import scala.concurrent.duration.*
+import scala.concurrent.Future
+import Utils.FutureOps.randomSchedule
 
 trait ProductService:
   def getPrice(product: ProductName, brand: BrandName): Double
@@ -11,6 +13,7 @@ trait ProductService:
       brand: Option[BrandName],
       quantity: Int
   ): String
+  def prepare(product: ProductName, brand: BrandName): Future[Unit]
 
 object ProductService:
   type BrandName = String
@@ -49,6 +52,7 @@ class ProductImpl extends ProductService:
     * @param brand
     *   : the brand name
     * @return
+    *   the price of the product
     */
   def getPrice(product: ProductName, brand: String): Double =
     products(product)(brand)._1
@@ -77,4 +81,18 @@ class ProductImpl extends ProductService:
   ): String =
     val b = brand.getOrElse(getDefaultBrand(name))
     s"${quantity} ${if name == BEER then b else s"${name} ${b}"}"
+
+    /** Prepare a product for delivery.
+      *
+      * @param product
+      *   : the product name
+      * @param brand
+      *   : the brand name
+      * @return
+      *   a future that will be completed when the product is ready
+      */
+  def prepare(product: ProductName, brand: BrandName): Future[Unit] =
+    val (_, delivery) = products(product)(brand)
+    println(s"Preparing ${product} ${brand}")
+    randomSchedule(delivery.mean, delivery.std, delivery.successRate)
 end ProductImpl
