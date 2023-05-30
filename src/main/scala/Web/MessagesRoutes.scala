@@ -30,6 +30,12 @@ class MessagesRoutes(
   val BOT_NAME = "BotTender"
   val NB_LATEST_MESSAGES = 20
 
+  /** Update the displayed messages of all the subscribers
+    */
+  private def updateDisplay() =
+    val messages = latestMessagesToString(NB_LATEST_MESSAGES)
+    subscribers.foreach(sendMessageToClient(_, messages))
+
   /** Create a JSON response to inform if the request was successful or not
     *
     * @param success
@@ -120,6 +126,7 @@ class MessagesRoutes(
       None,
       Some(replyId)
     )
+    replyId
   end botResponse
 
   /** Process a message sent by a user
@@ -141,11 +148,22 @@ class MessagesRoutes(
       val tokenized = tokenizerSvc.tokenize(content)
       try {
         val expr = new Parser(tokenized).parsePhrases()
-        val answer = expr match
-          case Identification(username) => s"Bonjour $username"
+        val (answer, futureAnswer) = expr match
+          case Identification(username) => (s"Bonjour $username", None)
           case _                        => analyzerSvc.reply(session)(expr)
 
-        botResponse(content, mention, Some(expr), answer)(session)
+        val idReply = botResponse(content, mention, Some(expr), answer)(session)
+        if futureAnswer.isDefined then
+          futureAnswer.get.map(content =>
+            msgSvc.add(
+              BOT_NAME,
+              Layouts.messageContent(" " + content, session.getCurrentUser),
+              session.getCurrentUser,
+              None,
+              Some(idReply)
+            )
+            updateDisplay()
+          )
       } catch {
         case e: Chat.UnexpectedTokenException =>
           return Some(e.getMessage)
@@ -153,12 +171,10 @@ class MessagesRoutes(
     else
       msgSvc.add(
         session.getCurrentUser.get,
-        Layouts.messageContent(message),
-        mention
+        Layouts.messageContent(message)
       )
 
-    val messages = latestMessagesToString(NB_LATEST_MESSAGES)
-    subscribers.foreach(sendMessageToClient(_, messages))
+    updateDisplay()
     None
   end processMessage
 
