@@ -4,13 +4,13 @@
 
 ## Choix architecturaux et d'implémentation
 
-Tout d'abord, nous n'avons pas créé de services ou de classes séparées suplémentaires. En effet, le code à ajouter pour gérer la notion de future est assez minime et nous avons préféré modifier les classes existantes aux endroits nécessaires.
+Pour commencer, nous n'avons pas créé de services ou de classes externes suplémentaires. En effet, le code à ajouter pour gérer la notion de future est assez minime et nous avons préféré modifier les classes existantes aux endroits nécessaires.
 
 La discussion qui suit est organisée par fichier modifié.
 
 ### ProductService.scala
 
-Nous avons créé une case class Delivery qui contient les informations de préparation d'un produit:
+Nous avons créé une case class `Delivery` qui contient les informations de préparation d'un produit:
 
 ```scala
 object ProductService:
@@ -34,7 +34,7 @@ private val products = Map(
   )
 ```
 
-Une méthode simulant la préparation d'un produit a été ajoutée, elle utilise la méthode `randomSchedule` fournie:
+Une méthode simulant la préparation d'un produit `prepare` a été ajoutée, elle utilise la méthode `randomSchedule` fournie:
 
 ```scala
 def prepare(product: ProductName, brand: BrandName): Future[Unit] =
@@ -45,7 +45,7 @@ def prepare(product: ProductName, brand: BrandName): Future[Unit] =
 
 ### AccountService.scala
 
-La seule modification apportée, est la gestion de la concurrence lors de l'achat d'un produit. La méthode `updateWith` permet de rendre l'opération atomique.
+La seule modification apportée dans cette classe est la gestion de la concurrence lors de l'achat d'un produit. La méthode `updateWith` permet de rendre l'opération atomique dans la méthode `purchase`.
 
 ```scala
 def purchase(user: String, amount: Double): Double =
@@ -59,11 +59,11 @@ def purchase(user: String, amount: Double): Double =
 
 ### AnalyzerService.scala
 
-La principale partie de la logique se trouve dans la classe `AnalyzerService`.
+La principale partie de la logique de ce laboratoire se trouve dans la classe `AnalyzerService`.
 
 **prepareCommand**
 
-Une méthode `prepareCommand` a été créée afin de gérer la création de futurs pour les commandes. Cette méthode est appelée dans la méthode `reply` dont nous discuterons après. Les informations à savoir ont été ajoutées sous forme de commentaire ci-dessous.
+Tout d'abord, une méthode `prepareCommand` a été créée afin de gérer la création de futurs pour les commandes. Cette méthode est appelée dans la méthode `reply` dont nous discuterons après. Les informations intéressantes à propos du code ont été ajoutées sous forme de commentaire ci-dessous.
 
 ```scala
 def prepareCommand(t: ExprTree): Future[ExprTree] = t match
@@ -91,14 +91,15 @@ def prepareCommand(t: ExprTree): Future[ExprTree] = t match
       )
     case And(left, right) =>
       // Pour gérer la commande de plusieurs types de produits, nous lançons les préparations
-      // en parallèle en créant une séquence de futurs.
+      // en parallèle en créant une séquence de futurs. Nous empêchons l'échec de l'entièreté les futurs
+      // dans le cas d'un échec en les transformants en Futur de Try
       val futures = List(prepareCommand(left), prepareCommand(right))
         .map(_.transform(Success(_)))
       val seq = Future.sequence(futures)
 
       // Nous gardons tous les produits qui ont bien été préparés et
-      // vérifions que la commande contient au moins un produit, dans le cas contraire
-      // elle est considérée comme échouée.
+      // vérifions que la commande contient au moins un produit bien préparé,
+      // dans le cas contraire elle est considérée comme échouée.
       val successes = seq.map(_.collect { case Success(x) => x })
       successes.flatMap(l =>
         l.size match {
@@ -115,19 +116,19 @@ def prepareCommand(t: ExprTree): Future[ExprTree] = t match
   end prepareCommand
 ```
 
-**retour de reply**
+**Type de retour de reply**
 
-La signature de la méthode `reply` a été modifiée afin de pouvoir potentiellement retourner un `Futur` (dans le cas où la commande contient des produits).
+La signature de la méthode `reply` a été modifiée afin de pouvoir potentiellement retourner un `Futur` contenant le message de fin de préparation des produits. Ce `Futur` est retourné comme second paramètre optionnel.
 
 ```scala
 def reply(session: Session)(t: ExprTree): (String, Option[Future[String]])
 ```
 
-**vérification du solde dans reply**
+**Vérification du solde dans reply**
 
 Lors d'une commande, nous devons vérifier qu'à la fin de la préparation de la commande, l'utilisateur ait encore un solde suffisant pour payer la commande (il aurait pu dépenser son argent entre temps via une autre commande plus rapide par exemple). Cela est fait dans la méthode `purchase` vue précédemment qui lance une exception dans ce cas.
 
-Si le futur retourné par `prepareCommand` est un échec, nous retournons un futur contenant le message expliquant que la commande n'a pas pu être délivrée.
+Si le futur retourné par `prepareCommand` est un échec, nous retournons dans le `Futur` un message expliquant que la commande n'a pas pu être délivrée.
 
 ```scala
 def reply(session: Session)(t: ExprTree): (String, Option[Future[String]]) =
@@ -166,7 +167,7 @@ def reply(session: Session)(t: ExprTree): (String, Option[Future[String]]) =
 
 ### MessagesRoutes.scala
 
-Pour finir, dans les routes de l'application web, la méthode qui s'occupe de gérer le message a été modifiée.
+Pour finir, dans les routes de l'application web, la méthode `processMessage` qui s'occupe de gérer le message envoyé par l'utilisateur a été modifiée.
 
 ```scala
 private def processMessage(message: String)(
@@ -195,4 +196,4 @@ private def processMessage(message: String)(
   end processMessage
 ```
 
-Si la méthode modifiée précédemment `reply` retourne un `Future`, le bot crée et ajoute le message de réponse une fois le `Future` terminé. L'affichages de tous les utilisateurs est ensuite mis à jour pour refléter le nouveau message.
+Si la méthode modifiée précédemment `reply` retourne un `Future` comme deuxième paramètre, le bot crée et ajoute le message de réponse une fois le `Future` terminé. L'affichages de tous les utilisateurs est ensuite mis à jour pour refléter le nouveau message.
