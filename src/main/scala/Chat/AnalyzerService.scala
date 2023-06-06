@@ -7,7 +7,7 @@ import scala.util.{Success, Failure}
 class AnalyzerService(productSvc: ProductService, accountSvc: AccountService):
   import ExprTree._
 
-  val TO_POOR =
+  val TOO_POOR =
     "Vous n'avez pas assez d'argent pour effectuer cette commande ! Vous êtes pauvre (:"
 
   /** Compute the price of the current node, then returns it. If the node is not
@@ -129,7 +129,7 @@ class AnalyzerService(productSvc: ProductService, accountSvc: AccountService):
       case command @ Command(expr) =>
         val price = computePrice(command)
         if price > accountSvc.getAccountBalance(user.get) then
-          return (TO_POOR, None)
+          return (TOO_POOR, None)
 
         val answer = prepareCommand(expr)
           .map(t => {
@@ -141,7 +141,7 @@ class AnalyzerService(productSvc: ProductService, accountSvc: AccountService):
               else
                 s"La commande de ${inner(expr)._1} est partiellement prête. Voici ${inner(t)._1}. Cela coute $toPay.-"
             } catch {
-              case e: Exception => TO_POOR
+              case e: Exception => TOO_POOR
             }
           })
           .recover(_ =>
