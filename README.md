@@ -118,7 +118,7 @@ def prepareCommand(t: ExprTree): Future[ExprTree] = t match
 
 **Type de retour de reply**
 
-La signature de la méthode `reply` a été modifiée afin de pouvoir potentiellement retourner un `Futur` contenant le message de fin de préparation des produits. Ce `Futur` est retourné comme second paramètre optionnel.
+La signature de la méthode `reply` a été modifiée afin de pouvoir potentiellement retourner un `Future` contenant le message de fin de préparation des produits. Ce `Future` est retourné comme second paramètre optionnel.
 
 ```scala
 def reply(session: Session)(t: ExprTree): (String, Option[Future[String]])
@@ -128,7 +128,7 @@ def reply(session: Session)(t: ExprTree): (String, Option[Future[String]])
 
 Lors d'une commande, nous devons vérifier qu'à la fin de la préparation de la commande, l'utilisateur ait encore un solde suffisant pour payer la commande (il aurait pu dépenser son argent entre temps via une autre commande plus rapide par exemple). Cela est fait dans la méthode `purchase` vue précédemment qui lance une exception dans ce cas.
 
-Si le futur retourné par `prepareCommand` est un échec, nous retournons dans le `Futur` un message expliquant que la commande n'a pas pu être délivrée.
+Si le futur retourné par `prepareCommand` est un échec, nous retournons dans le `Future` un message expliquant que la commande n'a pas pu être délivrée.
 
 ```scala
 def reply(session: Session)(t: ExprTree): (String, Option[Future[String]]) =
