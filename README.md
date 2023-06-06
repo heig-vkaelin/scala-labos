@@ -63,7 +63,7 @@ La principale partie de la logique de ce laboratoire se trouve dans la classe `A
 
 **prepareCommand**
 
-Tout d'abord, une méthode `prepareCommand` a été créée afin de gérer la création de futurs pour les commandes. Cette méthode est appelée dans la méthode `reply` dont nous discuterons après. Les informations intéressantes à propos du code ont été ajoutées sous forme de commentaire ci-dessous.
+Tout d'abord, une méthode `prepareCommand` a été créée afin de gérer la création de futures pour les commandes. Cette méthode est appelée dans la méthode `reply` dont nous discuterons après. Les informations intéressantes à propos du code ont été ajoutées sous forme de commentaire ci-dessous.
 
 ```scala
 def prepareCommand(t: ExprTree): Future[ExprTree] = t match
@@ -91,8 +91,8 @@ def prepareCommand(t: ExprTree): Future[ExprTree] = t match
       )
     case And(left, right) =>
       // Pour gérer la commande de plusieurs types de produits, nous lançons les préparations
-      // en parallèle en créant une séquence de futurs. Nous empêchons l'échec de l'entièreté des futurs
-      // dans le cas d'un échec en les transformants en Futur de Try
+      // en parallèle en créant une séquence de futures. Nous empêchons l'échec de l'entièreté des futures
+      // dans le cas où l'un de ceux-ci échoue en les transformants en Future de Try
       val futures = List(prepareCommand(left), prepareCommand(right))
         .map(_.transform(Success(_)))
       val seq = Future.sequence(futures)
@@ -128,7 +128,7 @@ def reply(session: Session)(t: ExprTree): (String, Option[Future[String]])
 
 Lors d'une commande, nous devons vérifier qu'à la fin de la préparation de la commande, l'utilisateur ait encore un solde suffisant pour payer la commande (il aurait pu dépenser son argent entre temps via une autre commande plus rapide par exemple). Cela est fait dans la méthode `purchase` vue précédemment qui lance une exception dans ce cas.
 
-Si le futur retourné par `prepareCommand` est un échec, nous retournons dans le `Future` un message expliquant que la commande n'a pas pu être délivrée.
+Si le `Future` retourné par `prepareCommand` est un échec, nous retournons dans le `Future` un message expliquant que la commande n'a pas pu être délivrée.
 
 ```scala
 def reply(session: Session)(t: ExprTree): (String, Option[Future[String]]) =
