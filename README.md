@@ -82,7 +82,7 @@ def prepareCommand(t: ExprTree): Future[ExprTree] = t match
           }
       }
 
-      // Une fois la quantité du produit souhaitée préparéem nous vérifions le nombre
+      // Une fois la quantité du produit souhaitée préparée nous vérifions le nombre
       // qui a été produit en réalité. Tant qu'il n'est pas nul, l'opération est réussie
       prepareInSerial(quantity, 0).flatMap(madeQuantity =>
         madeQuantity match
@@ -91,7 +91,7 @@ def prepareCommand(t: ExprTree): Future[ExprTree] = t match
       )
     case And(left, right) =>
       // Pour gérer la commande de plusieurs types de produits, nous lançons les préparations
-      // en parallèle en créant une séquence de futurs. Nous empêchons l'échec de l'entièreté les futurs
+      // en parallèle en créant une séquence de futurs. Nous empêchons l'échec de l'entièreté des futurs
       // dans le cas d'un échec en les transformants en Futur de Try
       val futures = List(prepareCommand(left), prepareCommand(right))
         .map(_.transform(Success(_)))
