@@ -19,14 +19,11 @@ class UsersRoutes(accountSvc: AccountService, sessionSvc: SessionService)(
 
   /** Display the login form and register form page
     *
-    * @param session
-    *   the current session
     * @return
     *   the HTML page
     */
-  @getSession(sessionSvc)
   @cask.get("/login")
-  def login()(session: Session) =
+  def login() =
     Layouts.loginPage(None, None)
   end login
 
