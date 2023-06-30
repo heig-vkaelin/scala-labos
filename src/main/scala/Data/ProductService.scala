@@ -93,6 +93,5 @@ class ProductImpl extends ProductService:
       */
   def prepare(product: ProductName, brand: BrandName): Future[Unit] =
     val (_, delivery) = products(product)(brand)
-    println(s"Preparing ${product} ${brand}")
     randomSchedule(delivery.mean, delivery.std, delivery.successRate)
 end ProductImpl
